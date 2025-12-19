@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FTV - Pro Search Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #000; color: white; font-family: sans-serif; overflow-x: hidden; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        #playerModal { transition: opacity 0.3s ease; }
+        .card-hidden { display: none; }
+    </style>
+</head>
+<body class="p-4 pb-28">
+
+    <header class="mb-6">
+        <div class="flex justify-between items-center mb-4">
+            <h1 class="text-4xl font-black text-red-600 tracking-tighter italic">FTV</h1>
+            <div class="bg-zinc-800 p-2 rounded-full active:scale-90 transition-transform">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+            </div>
+        </div>
+        <div class="relative">
+            <input type="text" id="searchInput" onkeyup="filterContent()" placeholder="Buscar películas o series..." 
+                   class="w-full bg-zinc-900 border border-zinc-800 rounded-full py-2 px-10 text-sm focus:outline-none focus:border-red-600 transition-all">
+            <svg class="w-4 h-4 text-zinc-500 absolute left-4 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+        </div>
+    </header>
+
+    <section class="mb-8 content-section">
+        <div class="flex items-center gap-2 mb-4">
+            <span class="relative flex h-3 w-3"><span class="animate-ping absolute h-full w-full rounded-full bg-red-400 opacity-75"></span><span class="relative rounded-full h-3 w-3 bg-red-600"></span></span>
+            <h2 class="text-xl font-bold uppercase tracking-widest">TV en vivo</h2>
+        </div>
+        <div class="flex space-x-4 overflow-x-auto hide-scrollbar pb-2">
+            <div onclick="playMedia('https://www.youtube.com/embed/V0m-S9X7690', 'RT News')" class="media-card min-w-[240px] bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-800">
+                <div class="h-32 bg-gradient-to-br from-zinc-700 to-black flex items-center justify-center font-black italic text-xl">RT LIVE</div>
+                <p class="p-3 text-xs font-bold uppercase title-text">RT News Live</p>
+            </div>
+            <div onclick="playMedia('https://www.youtube.com/embed/21X5lGlDOfg', 'NASA TV')" class="media-card min-w-[240px] bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-800">
+                <div class="h-32 bg-gradient-to-br from-blue-900 to-black flex items-center justify-center font-black italic text-xl uppercase">NASA TV</div>
+                <p class="p-3 text-xs font-bold uppercase title-text">NASA Television</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-8 content-section">
+        <h2 class="text-xl font-bold mb-4 uppercase tracking-widest text-blue-500">Series</h2>
+        <div class="flex space-x-4 overflow-x-auto hide-scrollbar pb-2" id="seriesContainer">
+            <div class="media-card min-w-[160px] relative" onclick="playMedia('https://www.youtube.com/embed/dQw4w9WgXcQ', 'Serie: El Inicio')">
+                <img src="https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?w=300" class="rounded-xl aspect-[2/3] object-cover border border-zinc-800">
+                <button onclick="event.stopPropagation(); toggleFav('Serie: El Inicio')" class="absolute top-2 right-2 bg-black/60 p-1.5 rounded-full"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/></svg></button>
+                <p class="mt-2 text-[10px] font-bold text-center uppercase title-text">El Inicio</p>
+            </div>
+            <div class="media-card min-w-[160px] relative" onclick="playMedia('https://www.youtube.com/embed/Bey4qe14FmU', 'Serie: El Espacio')">
+                <img src="https://images.unsplash.com/photo-1614728263952-84ea256f9679?w=300" class="rounded-xl aspect-[2/3] object-cover border border-zinc-800">
+                <button onclick="event.stopPropagation(); toggleFav('Serie: El Espacio')" class="absolute top-2 right-2 bg-black/60 p-1.5 rounded-full"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/></svg></button>
+                <p class="mt-2 text-[10px] font-bold text-center uppercase title-text">El Espacio</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <h2 class="text-xl font-bold mb-4 uppercase tracking-widest text-red-500">Películas</h2>
+        <div class="grid grid-cols-2 gap-4" id="moviesGrid">
+            <div class="media-card relative bg-zinc-900 rounded-xl overflow-hidden" onclick="playMedia('https://www.youtube.com/embed/7VbRSRVpPmc', 'Película: Acción')">
+                <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400" class="w-full aspect-[2/3] object-cover">
+                <button onclick="event.stopPropagation(); toggleFav('Película: Acción')" class="absolute top-2 right-2 bg-black/60 p-2 rounded-full"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/></svg></button>
+                <p class="p-2 text-[10px] text-center font-bold uppercase title-text">Misión Estreno</p>
+            </div>
+            <div class="media-card relative bg-zinc-900 rounded-xl overflow-hidden" onclick="playMedia('https://www.youtube.com/embed/L61p2uyiMSo', 'Película: Motor')">
+                <img src="https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?w=400" class="w-full aspect-[2/3] object-cover">
+                <button onclick="event.stopPropagation(); toggleFav('Película: Motor')" class="absolute top-2 right-2 bg-black/60 p-2 rounded-full"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/></svg></button>
+                <p class="p-2 text-[10px] text-center font-bold uppercase title-text">Velocidad FTV</p>
+            </div>
+        </div>
+    </section>
+
+    <div id="playerModal" class="fixed inset-0 bg-black z-50 hidden flex flex-col">
+        <div class="p-4 flex items-center bg-zinc-900">
+            <button onclick="stopMedia()" class="bg-red-600 text-white px-5 py-2 rounded-full font-black text-xs">✕ CERRAR</button>
+            <span id="videoTitle" class="ml-4 font-bold text-sm truncate uppercase">Reproduciendo...</span>
+        </div>
+        <div class="flex-1 flex items-center justify-center">
+            <iframe id="videoFrame" class="w-full aspect-video" src="" frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <nav class="fixed bottom-0 left-0 right-0 bg-black/95 border-t border-zinc-800 p-4 flex justify-around items-center z-40">
+        <button onclick="window.location.reload()" class="flex flex-col items-center text-red-600"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" /></svg><span class="text-[10px] mt-1 font-black">INICIO</span></button>
+        <button onclick="document.getElementById('searchInput').focus()" class="flex flex-col items-center text-zinc-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg><span class="text-[10px] mt-1 font-black">BUSCAR</span></button>
+        <button onclick="showFavs()" class="flex flex-col items-center text-zinc-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" /></svg><span class="text-[10px] mt-1 font-black">LISTA</span></button>
+    </nav>
+
+    <script>
+        let favorites = JSON.parse(localStorage.getItem('ftv_favs')) || [];
+
+        function filterContent() {
+            let input = document.getElementById('searchInput').value.toLowerCase();
+            let cards = document.getElementsByClassName('media-card');
+            
+            for (let card of cards) {
+                let title = card.querySelector('.title-text').innerText.toLowerCase();
+                if (title.includes(input)) {
+                    card.classList.remove('card-hidden');
+                } else {
+                    card.classList.add('card-hidden');
+                }
+            }
+        }
+
+        function playMedia(url, title) {
+            const modal = document.getElementById('playerModal');
+            document.getElementById('videoFrame').src = url + "?autoplay=1";
+            document.getElementById('videoTitle').innerText = title;
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function stopMedia() {
+            document.getElementById('playerModal').classList.add('hidden');
+            document.getElementById('videoFrame').src = "";
+            document.body.style.overflow = 'auto';
+        }
+
+        function toggleFav(title) {
+            if (favorites.includes(title)) {
+                favorites = favorites.filter(f => f !== title);
+                alert('Eliminado de tu lista');
+            } else {
+                favorites.push(title);
+                alert('¡Guardado!');
+            }
+            localStorage.setItem('ftv_favs', JSON.stringify(favorites));
+        }
+
+        function showFavs() {
+            alert(favorites.length > 0 ? 'Tu Lista:\n' + favorites.join('\n') : 'Lista vacía');
+        }
+    </script>
+</body>
+</html>
